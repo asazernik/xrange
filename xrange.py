@@ -101,19 +101,20 @@ class xrange(Sequence):
         """Return an xrange which represents the requested slce
         of the sequence represented by this xrange.
         """
-        start, stop, step = slce.start, slce.stop, slce.step
-        if step == 0:
+        start, stop, index_step = slce.start, slce.stop, slce.step
+        if index_step == 0:
             raise ValueError('slice step cannot be 0')
-
+            
         start = start or self._start
         stop = stop or self._stop
+        step = (index_step or 1) * self._step
         if start < 0:
             start = max(0, start + self._len)
         if stop < 0:
             stop = max(start, stop + self._len)
 
-        if step is None or step > 0:
-            return xrange(start, stop, step or 1)
+        if step > 0:
+            return xrange(start, stop, step)
         else:
             rv = reversed(self)
             rv._step = step
